@@ -79,7 +79,10 @@ export const Sidebar = () => {
 
           <hr className="w-full" />
 
-          <Link href={"/login"} className="hover:text-muted-foreground/80">
+          <Link
+            href={"/account/login"}
+            className="hover:text-muted-foreground/80"
+          >
             Register / Login
           </Link>
         </div>
@@ -88,6 +91,17 @@ export const Sidebar = () => {
   );
 };
 
+/**
+ * SidebarItem component renders a list of navigation links and a button
+ * to show product categories. It allows users to navigate to different
+ * sections of the application.
+ *
+ * @param {Object} props - The component props.
+ * @param {(show: boolean) => void} props.setShowCategory - A function to
+ * set the visibility of the category menu.
+ *
+ * @returns {JSX.Element} The rendered SidebarItem component.
+ */
 const SidebarItem = ({
   setShowCategory,
 }: {
@@ -118,6 +132,17 @@ const SidebarItem = ({
   );
 };
 
+/**
+ * CategoryMenu component renders a list of product categories
+ * and a button to close the category menu. It allows users to
+ * navigate to specific product categories within the application.
+ *
+ * @param {Object} props - The component props.
+ * @param {(show: boolean) => void} props.setShowCategory - A function to
+ * set the visibility of the category menu.
+ *
+ * @returns {JSX.Element} The rendered CategoryMenu component.
+ */
 const CategoryMenu = ({
   setShowCategory,
 }: {
