@@ -2,8 +2,9 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Search, ShoppingCart, X } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { Sidebar } from "./sidebar";
+import { ShoppingSidebar } from "./shopping-sidebar";
 import { Input } from "../ui/input";
 
 import { cn } from "@/lib/utils";
@@ -11,7 +12,6 @@ import { cn } from "@/lib/utils";
 export const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const searchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,18 +44,27 @@ export const Navbar = () => {
             className="size-6"
             onClick={() => setIsSearchOpen(true)}
           />
-          <ShoppingCart role="button" className="size-6" />
+          <ShoppingSidebar />
         </div>
       </div>
     </div>
   );
 };
 
+/**
+ * SearchInput component renders a search input field and a close button.
+ * It manages the visibility of the search input based on user interactions.
+ *
+ * @param {Object} props - The component props.
+ * @param {(value: boolean) => void} props.setIsSearchOpen - A function to set the search input visibility.
+ *
+ * @returns {JSX.Element} The rendered SearchInput component.
+ */
 const SearchInput = ({
   setIsSearchOpen,
 }: {
   setIsSearchOpen: (value: boolean) => void;
-}) => {
+}): JSX.Element => {
   const searchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
