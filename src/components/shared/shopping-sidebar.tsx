@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ShoppingBag } from "lucide-react";
+import { IconButton } from "./icon-button";
 
 import {
   Sheet,
@@ -17,7 +18,9 @@ export const ShoppingSidebar = () => {
   return (
     <Sheet>
       <SheetTrigger>
-        <ShoppingBag role="button" className="size-6" />
+        <IconButton>
+          <ShoppingBag role="button" className="size-6" />
+        </IconButton>
       </SheetTrigger>
       <SheetContent className="flex flex-col gap-y-5">
         <SheetHeader>

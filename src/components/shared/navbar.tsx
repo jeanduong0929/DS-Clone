@@ -8,6 +8,7 @@ import { ShoppingSidebar } from "./shopping-sidebar";
 import { Input } from "../ui/input";
 
 import { cn } from "@/lib/utils";
+import { IconButton } from "./icon-button";
 
 export const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -38,12 +39,10 @@ export const Navbar = () => {
             JEAN VINCERO
           </Link>
         )}
-        <div className="flex items-center gap-x-5">
-          <Search
-            role="button"
-            className="size-6"
-            onClick={() => setIsSearchOpen(true)}
-          />
+        <div className="flex items-center gap-x-8">
+          <IconButton onClick={() => setIsSearchOpen(true)}>
+            <Search role="button" className="size-6" />
+          </IconButton>
           <ShoppingSidebar />
         </div>
       </div>

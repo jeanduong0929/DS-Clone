@@ -10,6 +10,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { IconButton } from "./icon-button";
 
 export const Sidebar = () => {
   const [showCategory, setShowCategory] = useState(false);
@@ -37,7 +38,9 @@ export const Sidebar = () => {
   return (
     <Sheet>
       <SheetTrigger>
-        <Menu className="size-6" />
+        <IconButton>
+          <Menu className="size-6 text-black" />
+        </IconButton>
       </SheetTrigger>
       <SheetContent side={"left"} className="flex flex-col gap-y-10">
         <SheetHeader>
