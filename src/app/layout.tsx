@@ -25,7 +25,7 @@ export default function RootLayout({
         <QueryProvider>
           <Banner />
           <Navbar />
-          <main className="min-h-[200vh]">{children}</main>
+          <main>{children}</main>
         </QueryProvider>
       </body>
     </html>
