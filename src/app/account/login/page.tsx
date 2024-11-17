@@ -11,10 +11,12 @@ const LoginPage = () => {
         <div className="w-[402px] flex items-center flex-col gap-y-5">
           <h1 className="text-2xl text-center">Login</h1>
           <Input
+            type="email"
             className="w-full h-[48px] placeholder:text-xs placeholder:text-muted-foreground placeholder:font-light"
             placeholder="Email"
           />
           <Input
+            type="password"
             className="w-full h-[48px] placeholder:text-xs placeholder:text-muted-foreground placeholder:font-light"
             placeholder="Password"
           />

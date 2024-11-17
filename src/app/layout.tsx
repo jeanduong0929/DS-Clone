@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Toaster } from "sonner";
 
 import { Banner } from "@/components/shared/banner";
 import { Navbar } from "@/components/shared/navbar";
@@ -26,6 +27,7 @@ export default function RootLayout({
           <Banner />
           <Navbar />
           <main>{children}</main>
+          <Toaster />
         </QueryProvider>
       </body>
     </html>
