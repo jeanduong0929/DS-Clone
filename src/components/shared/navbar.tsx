@@ -2,18 +2,18 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Search, X } from "lucide-react";
+import { Menu, Search, X } from "lucide-react";
 import { Sidebar } from "./sidebar";
 import { ShoppingSidebar } from "./shopping-sidebar";
+import { IconButton } from "./icon-button";
 import { Input } from "../ui/input";
 
 import { cn } from "@/lib/utils";
-import { IconButton } from "./icon-button";
 
 export const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-
+  const [open, setOpen] = useState(false);
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 40);
@@ -24,29 +24,35 @@ export const Navbar = () => {
   }, []);
 
   return (
-    <div
-      className={cn(
-        "h-[65px] w-full flex items-center sticky top-0 z-50 bg-white transition-all duration-100 ease-in-out",
-        isScrolled ? "border-b" : "border-none"
-      )}
-    >
-      <div className="max-w-screen-2xl mx-auto w-11/12 flex items-center justify-between">
-        <Sidebar />
-        {isSearchOpen ? (
-          <SearchInput setIsSearchOpen={setIsSearchOpen} />
-        ) : (
-          <Link href="/" className="font-bold text-2xl">
-            JEAN VINCERO
-          </Link>
+    <>
+      <div
+        className={cn(
+          "h-[65px] w-full flex items-center sticky top-0 z-50 bg-white transition-all duration-100 ease-in-out",
+          isScrolled ? "border-b" : "border-none"
         )}
-        <div className="flex items-center gap-x-8">
-          <IconButton onClick={() => setIsSearchOpen(true)}>
-            <Search role="button" className="size-6" />
+      >
+        <div className="max-w-screen-2xl mx-auto w-11/12 flex items-center justify-between">
+          <IconButton onClick={() => setOpen(true)}>
+            <Menu className="size-6 text-black" />
           </IconButton>
-          <ShoppingSidebar />
+          {isSearchOpen ? (
+            <SearchInput setIsSearchOpen={setIsSearchOpen} />
+          ) : (
+            <Link href="/" className="font-bold text-2xl">
+              JEAN VINCERO
+            </Link>
+          )}
+          <div className="flex items-center gap-x-8">
+            <IconButton onClick={() => setIsSearchOpen(true)}>
+              <Search role="button" className="size-6" />
+            </IconButton>
+            <ShoppingSidebar />
+          </div>
         </div>
       </div>
-    </div>
+
+      <Sidebar open={open} setOpen={setOpen} />
+    </>
   );
 };
 

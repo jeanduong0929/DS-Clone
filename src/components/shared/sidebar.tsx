@@ -6,13 +6,17 @@ import { AnimatePresence, motion } from "framer-motion";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
-import { IconButton } from "./icon-button";
 
-export const Sidebar = () => {
+interface SidebarProps {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+}
+
+export const Sidebar = ({ open, setOpen }: SidebarProps) => {
   const [showCategory, setShowCategory] = useState(false);
 
   const variants = {
@@ -36,15 +40,11 @@ export const Sidebar = () => {
   };
 
   return (
-    <Sheet>
-      <SheetTrigger>
-        <IconButton>
-          <Menu className="size-6 text-black" />
-        </IconButton>
-      </SheetTrigger>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetContent side={"left"} className="flex flex-col gap-y-10">
         <SheetHeader>
           <SheetTitle className="text-3xl">JEAN VINCERO</SheetTitle>
+          <SheetDescription className="hidden" />
         </SheetHeader>
 
         <div className="flex flex-col gap-y-5 text-muted-foreground text-sm font-thin">
@@ -63,7 +63,10 @@ export const Sidebar = () => {
                 exit="exit"
                 transition={transition}
               >
-                <SidebarItem setShowCategory={setShowCategory} />
+                <SidebarItem
+                  setShowCategory={setShowCategory}
+                  setOpen={setOpen}
+                />
               </motion.div>
             ) : (
               <motion.div
@@ -75,7 +78,10 @@ export const Sidebar = () => {
                 exit="exit"
                 transition={transition}
               >
-                <CategoryMenu setShowCategory={setShowCategory} />
+                <CategoryMenu
+                  setShowCategory={setShowCategory}
+                  setOpen={setOpen}
+                />
               </motion.div>
             )}
           </AnimatePresence>
@@ -85,6 +91,7 @@ export const Sidebar = () => {
           <Link
             href={"/account/login"}
             className="hover:text-muted-foreground/80"
+            onClick={() => setOpen(false)}
           >
             Register / Login
           </Link>
@@ -107,16 +114,26 @@ export const Sidebar = () => {
  */
 const SidebarItem = ({
   setShowCategory,
+  setOpen,
 }: {
   setShowCategory: (show: boolean) => void;
+  setOpen: (open: boolean) => void;
 }) => {
   return (
     <div className="flex flex-col gap-y-5">
-      <Link href={"/"} className="hover:text-muted-foreground/80">
+      <Link
+        href={"/"}
+        className="hover:text-muted-foreground/80"
+        onClick={() => setOpen(false)}
+      >
         Home
       </Link>
 
-      <Link href={"/products"} className="hover:text-muted-foreground/80">
+      <Link
+        href={"/products"}
+        className="hover:text-muted-foreground/80"
+        onClick={() => setOpen(false)}
+      >
         All Products
       </Link>
 
@@ -128,7 +145,11 @@ const SidebarItem = ({
         <ChevronRight className="size-4" />
       </button>
 
-      <Link href={"/contact"} className="hover:text-muted-foreground/80">
+      <Link
+        href={"/contact"}
+        className="hover:text-muted-foreground/80"
+        onClick={() => setOpen(false)}
+      >
         Contact Us
       </Link>
     </div>
@@ -148,8 +169,10 @@ const SidebarItem = ({
  */
 const CategoryMenu = ({
   setShowCategory,
+  setOpen,
 }: {
   setShowCategory: (show: boolean) => void;
+  setOpen: (open: boolean) => void;
 }) => {
   return (
     <div className="flex flex-col gap-y-5">
@@ -166,6 +189,7 @@ const CategoryMenu = ({
       <Link
         href={"/products/hoodies"}
         className="hover:text-muted-foreground/80"
+        onClick={() => setOpen(false)}
       >
         Hoodies
       </Link>
@@ -173,6 +197,7 @@ const CategoryMenu = ({
       <Link
         href={"/products/shirts"}
         className="hover:text-muted-foreground/80"
+        onClick={() => setOpen(false)}
       >
         Shirts
       </Link>
@@ -180,6 +205,7 @@ const CategoryMenu = ({
       <Link
         href={"/products/trousers"}
         className="hover:text-muted-foreground/80"
+        onClick={() => setOpen(false)}
       >
         Trousers
       </Link>

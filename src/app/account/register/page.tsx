@@ -3,11 +3,11 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRegister } from "@/features/auth/api/use-register";
-import { Loader2 } from "lucide-react";
 
 const RegisterPage = () => {
   const [email, setEmail] = useState("");
@@ -73,7 +73,9 @@ const RegisterPage = () => {
    * the user to the login page. If an error occurs during the registration
    * process, it sets the error message to be displayed to the user.
    */
-  const handleOnSubmit = () => {
+  const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     if (!isValidForm()) return;
 
     mutate(
@@ -110,7 +112,10 @@ const RegisterPage = () => {
   return (
     <div className="h-[calc(100vh-105px)] flex items-center justify-center">
       <div className="p-8 border">
-        <div className="w-[402px] flex items-center flex-col gap-y-5">
+        <form
+          className="w-[402px] flex items-center flex-col gap-y-5"
+          onSubmit={handleOnSubmit}
+        >
           <h1 className="text-2xl text-center">CREATE ACCOUNT</h1>
           {error && <p className="text-red-500 text-sm font-light">{error}</p>}
           <Input
@@ -135,8 +140,8 @@ const RegisterPage = () => {
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
           <Button
+            type="submit"
             className="w-full h-[48px] bg-[#1e3820] font-thin hover:bg-[#152717]"
-            onClick={handleOnSubmit}
             disabled={isPending}
           >
             {isPending ? <Loader2 className="animate-spin size-5" /> : "CREATE"}
@@ -147,7 +152,7 @@ const RegisterPage = () => {
               Return to store
             </Link>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );
