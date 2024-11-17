@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import {
   useMutation,
   UseMutationResult,
+  QueryClient,
   useQueryClient,
 } from "@tanstack/react-query";
 import { client } from "@/lib/hono";
@@ -33,6 +34,8 @@ export const useRegister = (): UseMutationResult<
   Error,
   RequestType
 > => {
+  const queryClient = useQueryClient();
+
   const mutation = useMutation<ResponseType, Error, RequestType>({
     mutationFn: async (json) => {
       const response = await client.api.auth.register["$post"]({
@@ -40,8 +43,6 @@ export const useRegister = (): UseMutationResult<
       });
 
       const data = await response.json();
-
-      console.log(data);
 
       if (!response.ok) {
         if (response.status === 400) {
@@ -59,6 +60,7 @@ export const useRegister = (): UseMutationResult<
     },
     onSuccess: () => {
       toast.success("Account created");
+      queryClient.invalidateQueries({ queryKey: ["auth"] });
     },
   });
 

@@ -12,4 +12,4 @@ export const users = pgTable("users", {
   updatedAt: timestamp().notNull().defaultNow(),
 });
 
-export const insertAccountSchema = createInsertSchema(users);
+export const insertUserSchema = createInsertSchema(users);

@@ -10,6 +10,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { useAuth } from "@/features/auth/api/use-get-auth";
 
 interface SidebarProps {
   open: boolean;
@@ -18,6 +19,8 @@ interface SidebarProps {
 
 export const Sidebar = ({ open, setOpen }: SidebarProps) => {
   const [showCategory, setShowCategory] = useState(false);
+
+  const { isSignedIn } = useAuth();
 
   const variants = {
     enter: (direction: number) => ({
@@ -89,11 +92,11 @@ export const Sidebar = ({ open, setOpen }: SidebarProps) => {
           <hr className="w-full" />
 
           <Link
-            href={"/account/login"}
+            href={isSignedIn ? "/account" : "/account/login"}
             className="hover:text-muted-foreground/80"
             onClick={() => setOpen(false)}
           >
-            Register / Login
+            {isSignedIn ? "Logged in" : "Register / Login"}
           </Link>
         </div>
       </SheetContent>

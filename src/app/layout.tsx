@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
+import { Provider } from "jotai";
 
 import { Banner } from "@/components/shared/banner";
 import { Navbar } from "@/components/shared/navbar";
@@ -23,12 +24,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <QueryProvider>
-          <Banner />
-          <Navbar />
-          <main>{children}</main>
-          <Toaster />
-        </QueryProvider>
+        <Provider>
+          <QueryProvider>
+            <Banner />
+            <Navbar />
+            <main>{children}</main>
+            <Toaster />
+          </QueryProvider>
+        </Provider>
       </body>
     </html>
   );

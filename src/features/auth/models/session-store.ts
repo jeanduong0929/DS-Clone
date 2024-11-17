@@ -76,20 +76,21 @@ export class SessionStore {
   };
 
   /**
-   * Starts a cleanup process for expired sessions in the session store.
+   * Initiates a cleanup process for expired sessions in the session store.
    *
    * This method sets up an interval that checks for sessions that have
-   * exceeded the specified maximum age. If a session's age exceeds the
-   * `maxAge`, it will be deleted from the session store.
+   * exceeded the specified maximum age. If a session's age surpasses
+   * the `maxAge`, it will be deleted from the store.
    *
    * The default maximum age is set to 24 hours (in milliseconds).
+   * The cleanup process runs every hour (60 minutes).
    *
    * @param {number} maxAge - The maximum age of sessions in milliseconds.
-   *                          Sessions older than this will be deleted.
+   *                          Sessions older than this will be removed.
    *                          Defaults to 24 hours (24 * 60 * 60 * 1000).
    * @returns {void}
    */
-  startCleanup = (maxAge: number = 24 * 60 * 60 * 1000): void => {
+  private startCleanup = (maxAge: number = 24 * 60 * 60 * 1000): void => {
     if (this.cleanupIntervalId) return;
 
     this.cleanupIntervalId = setInterval(() => {
@@ -99,6 +100,6 @@ export class SessionStore {
           this.delete(id);
         }
       });
-    }, 60 * 60 * 1000);
+    }, 60 * 60 * 1000); // Cleanup every hour
   };
 }

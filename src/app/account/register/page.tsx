@@ -86,7 +86,7 @@ const RegisterPage = () => {
       {
         onSuccess: () => {
           clearForm();
-          router.push("/account/login");
+          router.push("/");
         },
         onError: (error) => {
           setError(error.message);
