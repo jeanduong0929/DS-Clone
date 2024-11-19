@@ -3,11 +3,11 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useLogin } from "@/features/auth/api/use-login";
-import { useRouter } from "next/navigation";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -17,6 +17,8 @@ const LoginPage = () => {
   const { mutate, isPending } = useLogin();
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get("redirect");
 
   /**
    * Handles the form submission for the login process.
@@ -38,7 +40,7 @@ const LoginPage = () => {
       {
         onSuccess: () => {
           clearForm();
-          router.push("/");
+          router.push(redirectUrl || "/");
         },
         onError: (error) => {
           setError(error.message);

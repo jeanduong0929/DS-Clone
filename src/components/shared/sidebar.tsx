@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Menu } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
+import { useAuth } from "@/features/auth/api/use-get-auth";
 import {
   Sheet,
   SheetContent,
@@ -10,7 +11,6 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { useAuth } from "@/features/auth/api/use-get-auth";
 
 interface SidebarProps {
   open: boolean;
@@ -21,6 +21,10 @@ export const Sidebar = ({ open, setOpen }: SidebarProps) => {
   const [showCategory, setShowCategory] = useState(false);
 
   const { isSignedIn } = useAuth();
+
+  useEffect(() => {
+    console.log(isSignedIn);
+  }, [isSignedIn]);
 
   const variants = {
     enter: (direction: number) => ({

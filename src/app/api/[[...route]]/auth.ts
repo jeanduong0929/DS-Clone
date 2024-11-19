@@ -14,7 +14,56 @@ const SALT_ROUNDS = 10;
 const SESSION_COOKIE_NAME = process.env.SESSION_COOKIE_NAME!;
 const SESSION_COOKIE_MAX_AGE = 24 * 60 * 60 * 1000; // Expire after 24 hours
 
+/**
+ * Hono application instance with configured authentication routes.
+ *
+ * This application provides the following routes for user authentication:
+ *
+ * - POST /register: Registers a new user with an email and password.
+ * - POST /login: Authenticates an existing user and creates a session.
+ * - POST /logout: Ends the user session and clears the session data.
+ * - GET /protected: Verifies the authentication status of the user.
+ *
+ * Each route is protected by middleware to ensure that only authenticated
+ * users can access certain functionalities.
+ */
 const app = new Hono()
+  /**
+   * Retrieves the authenticated user's information.
+   *
+   * This route checks if the user is authenticated by retrieving the user ID
+   * from the context. If the user is not authenticated, it returns a 401
+   * Unauthorized response. If authenticated, it fetches the user's data
+   * from the database and returns it in the response.
+   *
+   * @param {Context} c - The Hono context object containing request and response information.
+   * @returns {Promise<Response>} - A JSON response containing the user's data or an error message.
+   */
+  .get("/", authMiddleware, async (c: Context) => {
+    const userId = getUser(c);
+    if (!userId) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+    const [result] = await db
+      .select({
+        id: users.id,
+        email: users.email,
+      })
+      .from(users)
+      .where(eq(users.id, userId));
+
+    return c.json({ data: result }, 200);
+  })
+  /**
+   * Registers a new user.
+   *
+   * This route validates the provided email and password, checks if the
+   * user already exists, and if not, creates a new user in the database.
+   * It also creates a session for the new user upon successful registration.
+   *
+   * @param {Context} c - The Hono context object containing request and response information.
+   * @returns {Promise<Response>} - A JSON response indicating success or an error message.
+   */
   .post(
     "/register",
     zValidator(
@@ -58,6 +107,16 @@ const app = new Hono()
       return c.json({ success: true }, 201);
     }
   )
+  /**
+   * Authenticates an existing user.
+   *
+   * This route validates the provided email and password, checks if the
+   * user exists in the database, and if the password matches. Upon successful
+   * authentication, it creates a session for the user.
+   *
+   * @param {Context} c - The Hono context object containing request and response information.
+   * @returns {Promise<Response>} - A JSON response indicating success or an error message.
+   */
   .post(
     "/login",
     zValidator(
@@ -84,15 +143,16 @@ const app = new Hono()
       return c.json({ success: true }, 200);
     }
   )
+  /**
+   * Logs out the authenticated user.
+   *
+   * This route clears the user's session and returns a success response.
+   *
+   * @param {Context} c - The Hono context object containing request and response information.
+   * @returns {Promise<Response>} - A JSON response indicating success.
+   */
   .post("/logout", authMiddleware, (c) => {
     clearSession(c);
-    return c.json({ success: true }, 200);
-  })
-  .get("/protected", authMiddleware, (c) => {
-    const sessionId = getCookie(c, SESSION_COOKIE_NAME);
-    if (!sessionId) {
-      return c.json({ error: "Unauthorized" }, 401);
-    }
     return c.json({ success: true }, 200);
   });
 
@@ -147,6 +207,7 @@ const clearSession = (c: Context): void => {
   const sessionStore = SessionStore.getInstance();
   const sessionId = getCookie(c, SESSION_COOKIE_NAME);
   if (sessionId) {
+    console.log("sessionId", sessionId);
     sessionStore.delete(sessionId);
     deleteCookie(c, SESSION_COOKIE_NAME);
   }
@@ -186,6 +247,21 @@ const isValidPassword = (password: string) => {
   const passwordRegex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
   return passwordRegex.test(password);
+};
+
+/**
+ * Retrieves the user ID from the context.
+ *
+ * This function accesses the Hono context to retrieve the user ID
+ * that was previously set during the authentication process. The user ID
+ * is stored in the context under the key "userId". If the user ID is not
+ * present, this function will return undefined.
+ *
+ * @param {Context} c - The Hono context object containing request and response information.
+ * @returns {string | undefined} - The user ID if it exists, otherwise undefined.
+ */
+const getUser = (c: Context): string | undefined => {
+  return c.get("userId");
 };
 
 export default app;

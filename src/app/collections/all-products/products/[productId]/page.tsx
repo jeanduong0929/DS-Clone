@@ -1,11 +1,14 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
+import Image from "next/image";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import { useGetProductId } from "@/features/products/api/use-get-product-id";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { useRecentlyViewedItems } from "@/features/products/hooks/use-recently-viewed-items";
+import { useAuth } from "@/features/auth/api/use-get-auth";
 
 interface ProductPageProps {
   params: {
@@ -14,28 +17,22 @@ interface ProductPageProps {
 }
 
 const ProductPage = ({ params: { productId } }: ProductPageProps) => {
+  useRecentlyViewedItems({ productId });
+
+  const { data: user } = useAuth();
   const { data, isLoading } = useGetProductId({
     productId,
   });
 
-  // TODO: Implement recently viewed products
-  // Todo this will be a local storage solution
-  // when the user views a product add it to local storage
-  // data should be an array of product ids
-  // add the product id to the array
-  useEffect(() => {
-    const data = localStorage.getItem("itemsRecentlyViewed");
-    if (data) {
-      const parsed = JSON.parse(data);
-      // Check if the product id is already in the array
-      if (!parsed.includes(productId)) {
-        parsed.push(productId);
-        localStorage.setItem("itemsRecentlyViewed", JSON.stringify(parsed));
-      }
-    } else {
-      localStorage.setItem("itemsRecentlyViewed", JSON.stringify([productId]));
+  const router = useRouter();
+
+  console.log(user);
+
+  const handleAddToCart = () => {
+    if (!user) {
+      router.push(`/account/login?redirect=${window.location.pathname}`);
     }
-  }, [productId]);
+  };
 
   if (isLoading)
     return (
@@ -64,7 +61,10 @@ const ProductPage = ({ params: { productId } }: ProductPageProps) => {
           <p className="text-lg font-thin">${data?.price}</p>
         </div>
 
-        <Button className="w-full h-[48px] bg-[#1e3820] font-thin hover:bg-[#152717]">
+        <Button
+          className="w-full h-[48px] bg-[#1e3820] font-thin hover:bg-[#152717]"
+          onClick={handleAddToCart}
+        >
           ADD TO CART
         </Button>
       </div>

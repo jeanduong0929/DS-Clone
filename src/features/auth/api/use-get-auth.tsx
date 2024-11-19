@@ -1,17 +1,11 @@
 import { InferRequestType, InferResponseType } from "hono";
-import { atom, useAtom } from "jotai";
 
 import { useQuery } from "@tanstack/react-query";
 import { client } from "@/lib/hono";
+import { useUser } from "@/store/use-User";
 
-type RequestType = InferRequestType<(typeof client.api.auth.protected)["$get"]>;
-type ResponseType = InferResponseType<
-  (typeof client.api.auth.protected)["$get"]
->;
-
-const authAtom = atom<{
-  isSignedIn: boolean;
-} | null>(null);
+type RequestType = InferRequestType<(typeof client.api.auth)["$get"]>;
+type ResponseType = InferResponseType<(typeof client.api.auth)["$get"]>;
 
 /**
  * A custom hook that manages user authentication state.
@@ -33,14 +27,20 @@ const authAtom = atom<{
  * if (isLoading) return <div>Loading...</div>;
  * if (error) return <div>Error: {error.message}</div>;
  * return <div>User is {isSignedIn ? "signed in" : "not signed in"}</div>;
+ *
+ * @throws {Error} Throws an error if the fetch request fails.
+ *
+ * @description This hook is designed to be used in components where
+ * user authentication status is required. It ensures that the application
+ * state is updated correctly based on the user's authentication status.
  */
 export const useAuth = () => {
-  const [auth, setAuth] = useAtom(authAtom);
+  const [auth, setAuth] = useUser();
 
   const query = useQuery<ResponseType, Error, RequestType>({
     queryKey: ["auth"],
     queryFn: async () => {
-      const resp = await client.api.auth.protected["$get"]();
+      const resp = await client.api.auth["$get"]();
       const data = await resp.json();
 
       if (!resp.ok) {

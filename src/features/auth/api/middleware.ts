@@ -43,6 +43,6 @@ export const authMiddleware = async (c: Context, next: Next) => {
     return c.json({ error: "Session expired" }, 401);
   }
 
-  c.set(SESSION_COOKIE_NAME, sessionId);
+  c.set("userId", session.id);
   await next();
 };
