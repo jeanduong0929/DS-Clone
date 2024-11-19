@@ -1,0 +1,1 @@
+ALTER TABLE "product_images" ADD COLUMN "display_order" integer NOT NULL;

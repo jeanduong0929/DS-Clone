@@ -133,7 +133,7 @@ const SidebarItem = ({
       </Link>
 
       <Link
-        href={"/products"}
+        href={"/collections/all-products"}
         className="hover:text-muted-foreground/80"
         onClick={() => setOpen(false)}
       >

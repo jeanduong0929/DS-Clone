@@ -2,12 +2,12 @@ import { Context, Hono } from "hono";
 import { genSaltSync, hashSync, compareSync } from "bcrypt-ts";
 import { eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
+import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 
 import { db } from "@/db";
 import { zValidator } from "@hono/zod-validator";
 import { insertUserSchema, users } from "@/db/schema";
 import { SessionStore } from "@/features/auth/models/session-store";
-import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import { authMiddleware } from "@/features/auth/api/middleware";
 
 const SALT_ROUNDS = 10;

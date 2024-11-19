@@ -28,7 +28,7 @@ export default function RootLayout({
           <QueryProvider>
             <Banner />
             <Navbar />
-            <main>{children}</main>
+            <main className="max-w-screen-2xl mx-auto w-11/12">{children}</main>
             <Toaster />
           </QueryProvider>
         </Provider>

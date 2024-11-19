@@ -5,8 +5,22 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1731732646232,
-      "tag": "0000_wealthy_owl",
+      "when": 1731871403338,
+      "tag": "0000_minor_hercules",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1731871710389,
+      "tag": "0001_stale_catseye",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1731871846367,
+      "tag": "0002_milky_mole_man",
       "breakpoints": true
     }
   ]

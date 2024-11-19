@@ -1,6 +1,6 @@
 {
-  "id": "97ea522f-2641-436a-9b54-e58c40b669fe",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "8950a001-39a9-4312-a8bc-b5eadbf0057c",
+  "prevId": "97ea522f-2641-436a-9b54-e58c40b669fe",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -79,15 +79,15 @@
           "primaryKey": false,
           "notNull": true
         },
-        "createdAt": {
-          "name": "createdAt",
+        "created_at": {
+          "name": "created_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
-        "updatedAt": {
-          "name": "updatedAt",
+        "updated_at": {
+          "name": "updated_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
@@ -119,7 +119,7 @@
           "type": "uuid",
           "primaryKey": true,
           "notNull": true,
-          "default": "gen_random_uuid"
+          "default": "gen_random_uuid()"
         },
         "email": {
           "name": "email",
@@ -133,15 +133,15 @@
           "primaryKey": false,
           "notNull": true
         },
-        "createdAt": {
-          "name": "createdAt",
+        "created_at": {
+          "name": "created_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
-        "updatedAt": {
-          "name": "updatedAt",
+        "updated_at": {
+          "name": "updated_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
