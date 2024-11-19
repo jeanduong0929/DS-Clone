@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Fashion eCommerce Platform
 
-## Getting Started
+A modern eCommerce platform built for a premium fashion brand, focusing on performance and user experience.
 
-First, run the development server:
+![TypeScript](https://img.shields.io/badge/TypeScript-5.2-blue)
+![Next.js](https://img.shields.io/badge/Next.js-14-black)
+![Hono](https://img.shields.io/badge/Hono.js-3.7-yellow)
+![TanStack](https://img.shields.io/badge/TanStack-5.0-red)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🏗 Architecture
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Frontend:** Next.js App Router with Server Components
+- **API:** Hono.js for lightweight, type-safe API endpoints
+- **Data Layer:** TanStack Query + React Context
+- **Database:** Drizzle ORM for type-safe database operations
+- **Type Safety:** End-to-end TypeScript implementation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔥 Key Features
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Performance Optimizations
 
-## Learn More
+- Server-side rendering for core pages
+- Image optimization with Next.js
+- Edge-deployed API endpoints
+- Efficient caching strategies
 
-To learn more about Next.js, take a look at the following resources:
+### Shopping Experience
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Instant search functionality
+- Real-time inventory updates
+- Seamless checkout process
+- Responsive design for all devices
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### Admin Capabilities
 
-## Deploy on Vercel
+- Inventory management
+- Order processing
+- Product catalog management
+- Basic analytics dashboard
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 💪 Engineering Challenges
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+1. **State Management**
+
+   - Shopping cart implementation
+   - Product inventory tracking
+   - User session handling
+
+2. **Global Commerce**
+
+   - Multi-currency display
+   - Shipping calculations
+   - Regional pricing support
+
+3. **Image Handling**
+   - Responsive images
+   - Optimization pipeline
+   - Loading strategies
+
+## 🛠 Technical Skills Demonstrated
+
+- React & Next.js
+- TypeScript
+- API Design
+- Database Architecture
+- State Management
+- Performance Optimization
+- Responsive Design
+- eCommerce Integration
+
+---
+
+_This project demonstrates my ability to build modern web applications using current best practices and technologies._
