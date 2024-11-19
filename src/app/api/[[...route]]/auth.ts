@@ -6,7 +6,7 @@ import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 
 import { db } from "@/db";
 import { zValidator } from "@hono/zod-validator";
-import { insertUserSchema, users } from "@/db/schema";
+import { carts, insertUserSchema, users } from "@/db/schema";
 import { SessionStore } from "@/features/auth/models/session-store";
 import { authMiddleware } from "@/features/auth/api/middleware";
 
@@ -55,14 +55,18 @@ const app = new Hono()
     return c.json({ data: result }, 200);
   })
   /**
-   * Registers a new user.
+   * Registers a new user with the provided email and password.
    *
-   * This route validates the provided email and password, checks if the
-   * user already exists, and if not, creates a new user in the database.
-   * It also creates a session for the new user upon successful registration.
+   * This route handles user registration by validating the input email and password.
+   * It checks if the email is valid and if the password meets the required criteria.
+   * If the email is already associated with an existing user, it returns a conflict error.
+   * Upon successful registration, the user's password is hashed, and the user is inserted
+   * into the database. A new cart is also created for the user, and a session is initiated.
    *
    * @param {Context} c - The Hono context object containing request and response information.
    * @returns {Promise<Response>} - A JSON response indicating success or an error message.
+   * @throws {Error} Throws an error if the email is invalid, the password is invalid,
+   *                 or if the user already exists.
    */
   .post(
     "/register",
@@ -94,6 +98,7 @@ const app = new Hono()
       const salt = genSaltSync(SALT_ROUNDS);
       const hashedPassword = hashSync(password, salt);
 
+      // Insert the new user into the database
       const [newUser] = await db
         .insert(users)
         .values({
@@ -101,6 +106,10 @@ const app = new Hono()
           password: hashedPassword,
         })
         .returning();
+      // Create a cart for the new user
+      await db.insert(carts).values({
+        userId: newUser.id,
+      });
 
       createSession(c, newUser.id);
 
@@ -108,14 +117,16 @@ const app = new Hono()
     }
   )
   /**
-   * Authenticates an existing user.
+   * Logs in a user by validating their email and password.
    *
-   * This route validates the provided email and password, checks if the
-   * user exists in the database, and if the password matches. Upon successful
-   * authentication, it creates a session for the user.
+   * This route handles the user login process. It validates the provided
+   * email and password against the database. If the credentials are valid,
+   * it creates a session for the user and checks if the user has an existing
+   * cart. If not, it creates a new cart for the user.
    *
    * @param {Context} c - The Hono context object containing request and response information.
    * @returns {Promise<Response>} - A JSON response indicating success or an error message.
+   * @throws {Error} Throws an error if the email or password is invalid.
    */
   .post(
     "/login",
@@ -136,6 +147,18 @@ const app = new Hono()
 
       if (!user || !compareSync(password, user.password)) {
         return c.json({ error: "Invalid email or password" }, 400);
+      }
+
+      // Check if the user has a cart, if not, create one
+      const [cart] = await db
+        .select()
+        .from(carts)
+        .where(eq(carts.userId, user.id));
+
+      if (!cart) {
+        await db.insert(carts).values({
+          userId: user.id,
+        });
       }
 
       createSession(c, user.id);
