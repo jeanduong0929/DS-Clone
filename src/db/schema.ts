@@ -10,6 +10,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
+// Tables
 export const users = pgTable("users", {
   id: uuid("id")
     .primaryKey()
@@ -42,8 +43,46 @@ export const productImages = pgTable("product_images", {
   displayOrder: integer("display_order").notNull(),
 });
 
+export const carts = pgTable("carts", {
+  id: uuid("id")
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  userId: uuid("user_id")
+    .references(() => users.id)
+    .notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const cartItems = pgTable("cartItems", {
+  id: uuid("id")
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  cartId: uuid("cart_id")
+    .references(() => carts.id)
+    .notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const cartItemProducts = pgTable("cartItemProducts", {
+  id: uuid("id")
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  cartItemId: uuid("cart_item_id")
+    .references(() => cartItems.id)
+    .notNull(),
+  productId: uuid("product_id")
+    .references(() => products.id)
+    .notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
 // Relations
+// One to many relation between products and product images
 export const productsRelation = relations(products, ({ many }) => ({
+  cartItemProducts: many(cartItemProducts),
   productImages: many(productImages),
 }));
 export const productImagesRelation = relations(productImages, ({ one }) => ({
@@ -53,6 +92,41 @@ export const productImagesRelation = relations(productImages, ({ one }) => ({
   }),
 }));
 
+// One to one relation between users and carts
+// One to many relation between carts and cart items
+export const usersRelation = relations(users, ({ one }) => ({
+  carts: one(carts),
+}));
+export const cartsRelation = relations(carts, ({ one, many }) => ({
+  users: one(users, {
+    fields: [carts.userId],
+    references: [users.id],
+  }),
+  cartItems: many(cartItems),
+}));
+export const cartItemsRelation = relations(cartItems, ({ one, many }) => ({
+  carts: one(carts, {
+    fields: [cartItems.cartId],
+    references: [carts.id],
+  }),
+  cartItemProducts: many(cartItemProducts),
+}));
+
+// Many to many relation between cart items and products
+export const cartItemProductsRelations = relations(
+  cartItemProducts,
+  ({ one }) => ({
+    cartItems: one(cartItems, {
+      fields: [cartItemProducts.cartItemId],
+      references: [cartItems.id],
+    }),
+    products: one(products, {
+      fields: [cartItemProducts.productId],
+      references: [products.id],
+    }),
+  })
+);
+
 // Schemas
 export const insertUserSchema = createInsertSchema(users);
 export const selectUserSchema = createSelectSchema(users);
@@ -60,3 +134,7 @@ export const insertProductSchema = createInsertSchema(products);
 export const selectProductSchema = createSelectSchema(products);
 export const insertProductImageSchema = createInsertSchema(productImages);
 export const selectProductImageSchema = createSelectSchema(productImages);
+export const insertCartSchema = createInsertSchema(carts);
+export const selectCartSchema = createSelectSchema(carts);
+export const insertCartItemSchema = createInsertSchema(cartItems);
+export const selectCartItemSchema = createSelectSchema(cartItems);

@@ -1,6 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Loader2, ShoppingBag } from "lucide-react";
+import React, { useState } from "react";
+import { ShoppingBag } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+
 import { IconButton } from "./icon-button";
+import { Skeleton } from "../ui/skeleton";
 
 import {
   Sheet,
@@ -10,11 +14,17 @@ import {
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { useGetProductsByIds } from "@/features/products/api/use-get-products-ids";
-import Image from "next/image";
-import { Skeleton } from "../ui/skeleton";
-import Link from "next/link";
 
-export const ShoppingSidebar = () => {
+/**
+ * ShoppingSidebar component that displays a sidebar for shopping cart and recently viewed products.
+ *
+ * It contains a trigger button to open the sidebar, and two sections: Cart and Recently Viewed.
+ * The user can toggle between these two sections.
+ *
+ * @component
+ * @returns {JSX.Element} The ShoppingSidebar component.
+ */
+export const ShoppingSidebar = (): JSX.Element => {
   const [isCartOpen, setIsCartOpen] = useState(true);
 
   return (
@@ -56,11 +66,26 @@ export const ShoppingSidebar = () => {
   );
 };
 
-const Cart = () => {
+/**
+ * Cart component that displays the shopping cart.
+ *
+ * @component
+ * @returns {JSX.Element} The Cart component.
+ */
+const Cart = (): JSX.Element => {
   return <div>Cart</div>;
 };
 
-const RecentlyViewed = () => {
+/**
+ * RecentlyViewed component that displays a list of recently viewed products.
+ *
+ * It fetches product data using the `useGetProductsByIds` hook and displays a loading skeleton
+ * while the data is being fetched. Once the data is available, it renders the product details.
+ *
+ * @component
+ * @returns {JSX.Element} The RecentlyViewed component.
+ */
+const RecentlyViewed = (): JSX.Element => {
   const { data, isLoading, size } = useGetProductsByIds();
 
   if (isLoading) {
