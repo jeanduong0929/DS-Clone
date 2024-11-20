@@ -68,11 +68,37 @@ export const cartItems = pgTable("cartItems", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+export const orders = pgTable("orders", {
+  id: uuid("id")
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  userId: uuid("user_id")
+    .references(() => users.id)
+    .notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const orderItems = pgTable("orderItems", {
+  id: uuid("id")
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  orderId: uuid("order_id")
+    .references(() => orders.id)
+    .notNull(),
+  productId: uuid("product_id")
+    .references(() => products.id)
+    .notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
 // Relations
 // One to many relation between products and product images
 export const productsRelation = relations(products, ({ many }) => ({
   productImages: many(productImages),
   cartItems: many(cartItems),
+  orderItems: many(orderItems),
 }));
 export const productImagesRelation = relations(productImages, ({ one }) => ({
   product: one(products, {
@@ -83,8 +109,9 @@ export const productImagesRelation = relations(productImages, ({ one }) => ({
 
 // One to one relation between users and carts
 // One to many relation between carts and cart items
-export const usersRelation = relations(users, ({ one }) => ({
+export const usersRelation = relations(users, ({ one, many }) => ({
   carts: one(carts),
+  orders: many(orders),
 }));
 export const cartsRelation = relations(carts, ({ one, many }) => ({
   users: one(users, {
@@ -103,6 +130,23 @@ export const cartItemsRelation = relations(cartItems, ({ one, many }) => ({
     references: [products.id],
   }),
 }));
+export const ordersRelation = relations(orders, ({ one, many }) => ({
+  users: one(users, {
+    fields: [orders.userId],
+    references: [users.id],
+  }),
+  orderItems: many(orderItems),
+}));
+export const orderItemsRelation = relations(orderItems, ({ one }) => ({
+  orders: one(orders, {
+    fields: [orderItems.orderId],
+    references: [orders.id],
+  }),
+  products: one(products, {
+    fields: [orderItems.productId],
+    references: [products.id],
+  }),
+}));
 
 // Schemas
 export const insertUserSchema = createInsertSchema(users);
@@ -115,3 +159,7 @@ export const insertCartSchema = createInsertSchema(carts);
 export const selectCartSchema = createSelectSchema(carts);
 export const insertCartItemSchema = createInsertSchema(cartItems);
 export const selectCartItemSchema = createSelectSchema(cartItems);
+export const insertOrderSchema = createInsertSchema(orders);
+export const selectOrderSchema = createSelectSchema(orders);
+export const insertOrderItemSchema = createInsertSchema(orderItems);
+export const selectOrderItemSchema = createSelectSchema(orderItems);

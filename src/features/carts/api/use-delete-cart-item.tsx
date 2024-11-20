@@ -13,6 +13,24 @@ type ResponseType = InferResponseType<
   (typeof client.api.cartItems)[":productId"]["$delete"]
 >;
 
+/**
+ * Custom hook to delete a cart item from the user's cart.
+ *
+ * This hook uses the `useMutation` hook from React Query to handle the deletion of a cart item.
+ * It sends a DELETE request to the API with the specified product ID. Upon success, it invalidates
+ * the cart items query to refresh the data and shows a success toast notification. If an error occurs,
+ * it shows an error toast notification.
+ *
+ * @returns {MutationResult<ResponseType, Error, RequestType>} The mutation object containing
+ * the mutation state and methods to trigger the mutation.
+ *
+ * @example
+ * const { mutate: deleteCartItem } = useDeleteCartItem();
+ *
+ * const handleDelete = (productId) => {
+ *   deleteCartItem({ productId });
+ * };
+ */
 export const useDeleteCartItem = () => {
   const queryClient = useQueryClient();
 
