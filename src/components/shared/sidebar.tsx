@@ -22,10 +22,6 @@ export const Sidebar = ({ open, setOpen }: SidebarProps) => {
 
   const { isSignedIn } = useAuth();
 
-  useEffect(() => {
-    console.log(isSignedIn);
-  }, [isSignedIn]);
-
   const variants = {
     enter: (direction: number) => ({
       x: direction * 100,

@@ -50,9 +50,11 @@ export const useAuth = () => {
       setAuth({ isSignedIn: true });
       return data;
     },
-    staleTime: 5 * 60 * 1000, // after 5 minutes refetch data from server
+    staleTime: 0,
+    gcTime: 1000 * 60 * 5, // 5 minutes
     retry: false,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
+    refetchInterval: 1000 * 60 * 5, // 5 minutes
   });
 
   return {

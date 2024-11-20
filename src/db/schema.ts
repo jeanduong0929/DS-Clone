@@ -61,17 +61,6 @@ export const cartItems = pgTable("cartItems", {
   cartId: uuid("cart_id")
     .references(() => carts.id)
     .notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
-
-export const cartItemProducts = pgTable("cartItemProducts", {
-  id: uuid("id")
-    .primaryKey()
-    .default(sql`gen_random_uuid()`),
-  cartItemId: uuid("cart_item_id")
-    .references(() => cartItems.id)
-    .notNull(),
   productId: uuid("product_id")
     .references(() => products.id)
     .notNull(),
@@ -82,8 +71,8 @@ export const cartItemProducts = pgTable("cartItemProducts", {
 // Relations
 // One to many relation between products and product images
 export const productsRelation = relations(products, ({ many }) => ({
-  cartItemProducts: many(cartItemProducts),
   productImages: many(productImages),
+  cartItems: many(cartItems),
 }));
 export const productImagesRelation = relations(productImages, ({ one }) => ({
   product: one(products, {
@@ -109,23 +98,11 @@ export const cartItemsRelation = relations(cartItems, ({ one, many }) => ({
     fields: [cartItems.cartId],
     references: [carts.id],
   }),
-  cartItemProducts: many(cartItemProducts),
+  products: one(products, {
+    fields: [cartItems.productId],
+    references: [products.id],
+  }),
 }));
-
-// Many to many relation between cart items and products
-export const cartItemProductsRelations = relations(
-  cartItemProducts,
-  ({ one }) => ({
-    cartItems: one(cartItems, {
-      fields: [cartItemProducts.cartItemId],
-      references: [cartItems.id],
-    }),
-    products: one(products, {
-      fields: [cartItemProducts.productId],
-      references: [products.id],
-    }),
-  })
-);
 
 // Schemas
 export const insertUserSchema = createInsertSchema(users);

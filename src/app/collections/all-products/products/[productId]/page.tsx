@@ -9,6 +9,8 @@ import { useGetProductId } from "@/features/products/api/use-get-product-id";
 import { Button } from "@/components/ui/button";
 import { useRecentlyViewedItems } from "@/features/products/hooks/use-recently-viewed-items";
 import { useAuth } from "@/features/auth/api/use-get-auth";
+import { useShoppingSidebar } from "@/store/use-shopping-sidebar";
+import { useAddCartItem } from "@/features/carts/api/use-add-cart-item";
 
 interface ProductPageProps {
   params: {
@@ -17,24 +19,35 @@ interface ProductPageProps {
 }
 
 const ProductPage = ({ params: { productId } }: ProductPageProps) => {
-  useRecentlyViewedItems({ productId });
-
-  const { data: user } = useAuth();
+  const { data: user, isLoading: isAuthLoading } = useAuth();
   const { data, isLoading } = useGetProductId({
     productId,
   });
 
-  const router = useRouter();
+  const [, setOpen] = useShoppingSidebar();
 
-  console.log(user);
+  const { mutate: addCartItem } = useAddCartItem();
+
+  const router = useRouter();
+  useRecentlyViewedItems({ productId });
 
   const handleAddToCart = () => {
     if (!user) {
       router.push(`/account/login?redirect=${window.location.pathname}`);
+      return;
     }
+
+    addCartItem(
+      { productId },
+      {
+        onSuccess: () => {
+          setOpen(true);
+        },
+      }
+    );
   };
 
-  if (isLoading)
+  if (isLoading || isAuthLoading)
     return (
       <div className="min-h-[calc(100vh-105px)] flex justify-center items-center">
         <Loader2 className="animate-spin size-10" />

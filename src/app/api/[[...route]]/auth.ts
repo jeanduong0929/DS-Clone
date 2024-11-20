@@ -230,7 +230,6 @@ const clearSession = (c: Context): void => {
   const sessionStore = SessionStore.getInstance();
   const sessionId = getCookie(c, SESSION_COOKIE_NAME);
   if (sessionId) {
-    console.log("sessionId", sessionId);
     sessionStore.delete(sessionId);
     deleteCookie(c, SESSION_COOKIE_NAME);
   }

@@ -11,7 +11,7 @@ export const useRecentlyViewedItems = ({
 }: UseRecentlyViewedItemsProps) => {
   useEffect(() => {
     const data = localStorage.getItem("itemsRecentlyViewed");
-    if (data) {
+    if (data && productId) {
       const parsed = JSON.parse(data);
       if (!parsed.includes(productId)) {
         parsed.push(productId);
