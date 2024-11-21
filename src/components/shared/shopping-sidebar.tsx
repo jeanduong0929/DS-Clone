@@ -185,6 +185,8 @@ const Cart = (): JSX.Element => {
 const RecentlyViewed = (): JSX.Element => {
   const { data, isLoading, size } = useGetProductsByIds();
 
+  const [, setOpen] = useShoppingSidebar();
+
   if (isLoading) {
     return (
       <div className="flex flex-col gap-y-5">
@@ -209,6 +211,7 @@ const RecentlyViewed = (): JSX.Element => {
             key={product.id}
             href={`/products/${product.id}`}
             className="flex gap-x-5"
+            onClick={() => setOpen(false)}
           >
             <Image
               src={product.productImages[0].url}
