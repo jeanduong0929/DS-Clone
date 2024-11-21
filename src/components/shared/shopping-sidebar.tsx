@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingBag, X } from "lucide-react";
+import { Loader2, ShoppingBag, X } from "lucide-react";
 import { IconButton } from "./icon-button";
 import { Skeleton } from "../ui/skeleton";
 import { Button } from "../ui/button";
@@ -18,6 +18,8 @@ import { useShoppingSidebar } from "@/store/use-shopping-sidebar";
 import { useGetCartItems } from "@/features/carts/api/use-get-cart-items";
 import { useAuth } from "@/features/auth/api/use-get-auth";
 import { useDeleteCartItem } from "@/features/carts/api/use-delete-cart-item";
+import { useConfirm } from "@/hooks/use-confirm";
+import { useCheckout } from "@/features/orders/api/use-checkout";
 
 /**
  * ShoppingSidebar component that displays a sidebar for shopping cart and recently viewed products.
@@ -81,8 +83,10 @@ const Cart = (): JSX.Element => {
   const { data, isLoading } = useGetCartItems();
   const { data: user } = useAuth();
   const { mutate: deleteCartItem } = useDeleteCartItem();
+  const { mutate: checkout, isPending } = useCheckout();
 
   const [, setOpen] = useShoppingSidebar();
+  const [confirm, ConfirmDialog] = useConfirm();
 
   if (isLoading) {
     return (
@@ -111,38 +115,61 @@ const Cart = (): JSX.Element => {
   }
 
   return (
-    <div>
-      <div className="flex flex-col gap-y-5">
-        {data?.map((product) => (
-          <div
-            key={product.id}
-            className="flex items-start justify-between gap-x-5"
-          >
-            <Link href={`/products/${product.id}`} className="flex gap-x-5">
-              <Image
-                src={product.productImages[0].url}
-                alt={product.name}
-                width={150}
-                height={150}
+    <>
+      <div className="flex flex-col h-screen">
+        <div className="flex flex-col gap-y-5">
+          {data?.map((product) => (
+            <div
+              key={product.id}
+              className="flex items-start justify-between gap-x-5"
+            >
+              <Link href={`/products/${product.id}`} className="flex gap-x-5">
+                <Image
+                  src={product.productImages[0].url}
+                  alt={product.name}
+                  width={150}
+                  height={150}
+                />
+                <div className="flex flex-col gap-y-1 text-xs font-thin">
+                  <span>{product.name}</span>
+                  <span>${product.price}.00</span>
+                </div>
+              </Link>
+              <X
+                role="button"
+                className="size-5"
+                onClick={() =>
+                  deleteCartItem({
+                    productId: product.id,
+                  })
+                }
               />
-              <div className="flex flex-col gap-y-1 text-xs font-thin">
-                <span>{product.name}</span>
-                <span>${product.price}.00</span>
-              </div>
-            </Link>
-            <X
-              role="button"
-              className="size-5"
-              onClick={() =>
-                deleteCartItem({
-                  productId: product.id,
-                })
-              }
-            />
-          </div>
-        ))}
+            </div>
+          ))}
+        </div>
+        <Button
+          className="mt-auto h-[48px]"
+          onClick={async () => {
+            if (!data) return;
+
+            const ok = await confirm();
+            if (!ok) return;
+
+            checkout({
+              productId: data.map((product) => product.id).join(","),
+            });
+          }}
+          disabled={isPending}
+        >
+          {isPending ? <Loader2 className="size-5 animate-spin" /> : "Checkout"}
+        </Button>
       </div>
-    </div>
+
+      <ConfirmDialog
+        title={"Checkout"}
+        description={"Are you sure you want to checkout?"}
+      />
+    </>
   );
 };
 

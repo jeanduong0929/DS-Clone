@@ -111,7 +111,6 @@ const app = new Hono()
     ),
     async (c) => {
       const { productId } = c.req.valid("param");
-      console.log(productId);
 
       const user = await getUser(c);
       if (!user) {

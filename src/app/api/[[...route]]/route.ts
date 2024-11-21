@@ -5,6 +5,7 @@ import auth from "./auth";
 import users from "./users";
 import products from "./products";
 import cartItems from "./cartItems";
+import orders from "./orders";
 
 export const runtime = "edge";
 
@@ -14,7 +15,8 @@ const routes = app
   .route("/auth", auth)
   .route("/users", users)
   .route("/products", products)
-  .route("/cartItems", cartItems);
+  .route("/cartItems", cartItems)
+  .route("/orders", orders);
 
 export const GET = handle(app);
 export const POST = handle(app);
